@@ -36,7 +36,10 @@ func RunAsProducer(
 	)
 }
 
-func RunAsConsumer(ctx context.Context, cfg Config) error {
+func RunAsConsumer(
+	ctx context.Context,
+	cfg Config,
+) error {
 	logger, err := cfg.logger()
 	if err != nil {
 		return err
