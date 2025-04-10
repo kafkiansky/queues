@@ -71,6 +71,7 @@ func Run(
 
 		log.Info("flush all buffered records")
 
+		//nolint:contextcheck
 		if err := cl.Flush(flushCtx); err != nil && !errors.Is(err, context.Canceled) {
 			log.Error("flush producer error",
 				slog.String("err", err.Error()))

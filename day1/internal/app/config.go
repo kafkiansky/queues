@@ -32,7 +32,7 @@ type Config struct {
 }
 
 func ParseConfig(path string) (Config, error) {
-	b, err := os.ReadFile(path)
+	b, err := os.ReadFile(path) //nolint:gosec
 	if err != nil {
 		return Config{}, fmt.Errorf("os.ReadFile: %w", err)
 	}

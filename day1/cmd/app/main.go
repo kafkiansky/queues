@@ -17,6 +17,10 @@ var (
 	configPath = flag.String("config", "config.local.yaml", "Path to config file.")
 )
 
+var (
+	errInvalidMode = errors.New("invalid running mode")
+)
+
 func main() {
 	flag.Parse()
 
@@ -27,7 +31,7 @@ func main() {
 
 func run() error {
 	if len(os.Args) < 2 || !slices.Contains([]string{"producer", "consumer"}, os.Args[1]) {
-		return fmt.Errorf("invalid running mode")
+		return errInvalidMode
 	}
 
 	cfg, err := app.ParseConfig(*configPath)

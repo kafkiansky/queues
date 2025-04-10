@@ -38,6 +38,7 @@ func Run(
 		if cursor > 0 {
 			processRecords(log, msgs[:cursor])
 
+			//nolint:contextcheck
 			if err := commitRecords(cl); err != nil {
 				log.Error("commit records error",
 					slog.String("err", err.Error()))
