@@ -1,0 +1,18 @@
+kafka:
+  topic:
+    name: day1
+    partitions: 3
+    replication_factor: 3
+    configs:
+      min.insync.replicas: '2'
+  consumer:
+    group: day1-consumer
+  brokers:
+    - kafka-1:9092
+    - kafka-2:9092
+    - kafka-3:9092
+    - kafka-4:9092
+
+log:
+  level: INFO
+  fmt: text ## or json
