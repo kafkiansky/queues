@@ -1,4 +1,4 @@
-package org.example
+package org.queues
 
 fun randomString(
     chars: List<String>,

@@ -1,4 +1,4 @@
-package org.example
+package org.queues
 
 data class Record<K, V>(
     val topic: String,

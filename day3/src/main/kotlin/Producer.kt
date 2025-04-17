@@ -1,4 +1,4 @@
-package org.example
+package org.queues
 
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.awaitAll
@@ -9,6 +9,10 @@ import kotlinx.coroutines.isActive
 
 suspend fun main(args: Array<String>) = coroutineScope {
     val config = Cli.parseProducerCommand(args)
+
+    createTopic(config.brokers, listOf(
+        Topic(config.topic),
+    ))
 
     val producer = Kafka.producer(
         config.brokers,

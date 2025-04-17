@@ -1,4 +1,4 @@
-package org.example
+package org.queues
 
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig

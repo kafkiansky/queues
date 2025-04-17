@@ -1,4 +1,4 @@
-package org.example
+package org.queues
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred

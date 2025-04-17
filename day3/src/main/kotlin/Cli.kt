@@ -1,8 +1,8 @@
-package org.example
+package org.queues
 
 class Cli private constructor() {
     companion object ProduceCommand {
-        fun parseProducerCommand(args: Array<String>): org.example.ProduceCommand = ProduceCommand(
+        fun parseProducerCommand(args: Array<String>): org.queues.ProduceCommand = ProduceCommand(
             brokers = args.parseValue("brokers")?.split(",") ?: listOf(
                 "kafka-1:9092",
                 "kafka-2:9092",

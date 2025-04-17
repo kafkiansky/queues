@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "2.1.10"
 }
 
-group = "org.example"
+group = "org.queues"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -22,17 +22,17 @@ tasks.test {
 
 tasks.register<JavaExec>("producer") {
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("org.example.ProducerKt")
+    mainClass.set("org.queues.ProducerKt")
 }
 
 tasks.register<JavaExec>("stream") {
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("org.example.StreamKt")
+    mainClass.set("org.queues.StreamKt")
 }
 
 tasks.register<JavaExec>("consumer") {
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("org.example.ConsumerKt")
+    mainClass.set("org.queues.ConsumerKt")
 }
 
 kotlin {
