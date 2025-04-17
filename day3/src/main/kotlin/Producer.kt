@@ -14,7 +14,7 @@ suspend fun main(args: Array<String>) = coroutineScope {
         Topic(config.topic),
     ))
 
-    val producer = Kafka.producer(
+    val producer = Kafka.producer<String, String>(
         config.brokers,
     )
 
