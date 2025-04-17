@@ -4,6 +4,10 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.Serdes
+import org.apache.kafka.streams.KafkaStreams
+import org.apache.kafka.streams.StreamsConfig
+import org.apache.kafka.streams.Topology
 import java.util.Properties
 
 class Kafka private constructor() {
@@ -27,5 +31,12 @@ class Kafka private constructor() {
                 put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
             }
         )
+
+        fun stream(brokers: List<String>, topology: Topology): KafkaStreams = KafkaStreams(topology, Properties().apply {
+            put(StreamsConfig.APPLICATION_ID_CONFIG, "uppercase")
+            put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokers.joinToString(","))
+            put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().javaClass.name)
+            put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().javaClass.name)
+        })
     }
 }

@@ -17,6 +17,12 @@ class Cli private constructor() {
             topic = args.parseValue("topic") ?: defaultConsumeTopic,
             groupId = args.parseValue("group") ?: "testing",
         )
+
+        fun parseMapStreamCommand(args: Array<String>): MapStreamCommand = MapStreamCommand(
+            brokers = args.parseValue("brokers")?.split(",") ?: defaultBrokers.split(","),
+            topicIn = args.parseValue("topic-in") ?: defaultProduceTopic,
+            topicOut = args.parseValue("topic-out") ?: defaultConsumeTopic,
+        )
     }
 }
 
@@ -30,6 +36,12 @@ data class ConsumeCommand(
     val brokers: List<String>,
     val topic: String,
     val groupId: String,
+)
+
+data class MapStreamCommand(
+    val brokers: List<String>,
+    val topicIn: String,
+    val topicOut: String,
 )
 
 fun Array<String>.parseValue(name: String): String? = this

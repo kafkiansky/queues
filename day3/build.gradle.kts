@@ -25,14 +25,14 @@ tasks.register<JavaExec>("producer") {
     mainClass.set("org.queues.ProducerKt")
 }
 
-tasks.register<JavaExec>("stream") {
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("org.queues.StreamKt")
-}
-
 tasks.register<JavaExec>("consumer") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("org.queues.ConsumerKt")
+}
+
+tasks.register<JavaExec>("map") {
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.queues.MapStreamKt")
 }
 
 kotlin {
