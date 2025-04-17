@@ -32,8 +32,8 @@ class Kafka private constructor() {
             }
         )
 
-        fun stream(brokers: List<String>, topology: Topology): KafkaStreams = KafkaStreams(topology, Properties().apply {
-            put(StreamsConfig.APPLICATION_ID_CONFIG, "uppercase")
+        fun stream(brokers: List<String>, applicationName: String, topology: Topology): KafkaStreams = KafkaStreams(topology, Properties().apply {
+            put(StreamsConfig.APPLICATION_ID_CONFIG, applicationName)
             put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokers.joinToString(","))
             put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().javaClass.name)
             put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().javaClass.name)

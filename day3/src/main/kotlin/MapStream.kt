@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
 
     val stream = Kafka.stream(
         config.brokers,
+        "uppercase",
         StreamsBuilder()
             .apply {
                 stream<String, String>(config.topicIn)
