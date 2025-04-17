@@ -18,7 +18,7 @@ class Cli private constructor() {
             groupId = args.parseValue("group") ?: "testing",
         )
 
-        fun parseMapStreamCommand(args: Array<String>): MapStreamCommand = MapStreamCommand(
+        fun parseStreamCommand(args: Array<String>): StreamCommand = StreamCommand(
             brokers = args.parseValue("brokers")?.split(",") ?: defaultBrokers.split(","),
             topicIn = args.parseValue("topic-in") ?: defaultProduceTopic,
             topicOut = args.parseValue("topic-out") ?: defaultConsumeTopic,
@@ -38,7 +38,7 @@ data class ConsumeCommand(
     val groupId: String,
 )
 
-data class MapStreamCommand(
+data class StreamCommand(
     val brokers: List<String>,
     val topicIn: String,
     val topicOut: String,

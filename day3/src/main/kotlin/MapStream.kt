@@ -3,7 +3,7 @@ package org.queues
 import org.apache.kafka.streams.StreamsBuilder
 
 fun main(args: Array<String>) {
-    val config = Cli.parseMapStreamCommand(args)
+    val config = Cli.parseStreamCommand(args)
 
     createTopic(config.brokers, listOf(
         Topic(config.topicIn),
