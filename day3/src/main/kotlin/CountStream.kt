@@ -1,6 +1,8 @@
 package org.queues
 
+import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.StreamsBuilder
+import org.apache.kafka.streams.kstream.Materialized
 
 fun main(args: Array<String>) {
     val config = Cli.parseStreamCommand(args)
@@ -12,12 +14,20 @@ fun main(args: Array<String>) {
 
     val stream = Kafka.stream(
         config.brokers,
-        "uppercase",
+        "count",
         StreamsBuilder()
             .apply {
                 stream<String, String>(config.topicIn)
-                    .filter { _, it -> it.startsWith("a") }
-                    .mapValues { value -> value.uppercase() }
+                    .flatMapValues { value ->
+                        value
+                            .toCharArray()
+                            .map { it.toString() }
+                            .also { println("Count in $value") }
+                    }
+                    .groupBy { _, char -> char }
+                    .count(Materialized.`as`("char-counts"))
+                    .toStream()
+                    .map { char, count -> KeyValue(char, count.toString()) }
                     .to(config.topicOut)
             }
             .build()

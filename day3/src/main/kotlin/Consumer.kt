@@ -28,7 +28,7 @@ suspend fun main(args: Array<String>) = coroutineScope {
 
     channel
         .collect { record ->
-            println("received: ${record.value()}")
+            println("received: ${record.key() ?: ""} - ${record.value()}")
         }
 
     consumer.close()

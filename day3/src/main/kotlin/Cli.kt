@@ -9,7 +9,7 @@ class Cli private constructor() {
         fun parseProducerCommand(args: Array<String>): ProduceCommand = ProduceCommand(
             brokers = args.parseValue("brokers")?.split(",") ?: defaultBrokers.split(","),
             topic = args.parseValue("topic") ?: defaultProduceTopic,
-            count = args.parseValue("count")?.toIntOrNull() ?: 10_000,
+            count = args.parseValue("count")?.toIntOrNull() ?: 100_000,
         )
 
         fun parseConsumerCommand(args: Array<String>): ConsumeCommand = ConsumeCommand(

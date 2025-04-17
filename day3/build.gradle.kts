@@ -35,6 +35,11 @@ tasks.register<JavaExec>("map") {
     mainClass.set("org.queues.MapStreamKt")
 }
 
+tasks.register<JavaExec>("count") {
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.queues.CountStreamKt")
+}
+
 kotlin {
     jvmToolchain(21)
 }
