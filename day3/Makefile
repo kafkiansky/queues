@@ -21,3 +21,9 @@ run-count:
 
 run-count-consumer:
 	docker compose exec kotlin ./gradlew consumer --args="--topic=count"
+
+run-top:
+	docker compose exec kotlin ./gradlew top --args="--topic-out=top"
+
+run-top-consumer:
+	docker compose exec kotlin ./gradlew consumer --args="--topic=top"

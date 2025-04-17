@@ -40,6 +40,11 @@ tasks.register<JavaExec>("count") {
     mainClass.set("org.queues.CountStreamKt")
 }
 
+tasks.register<JavaExec>("top") {
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.queues.TopCharStreamKt")
+}
+
 kotlin {
     jvmToolchain(21)
 }
