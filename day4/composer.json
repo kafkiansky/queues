@@ -1,0 +1,45 @@
+{
+    "name": "kafkiansky/day4",
+    "description": "Testing CDC using Sequin.",
+    "license": "MIT",
+    "type": "project",
+    "authors": [
+        {
+            "name": "v.zanfir",
+            "email": "vadimzanfir@gmail.com"
+        }
+    ],
+    "require": {
+        "amphp/http-client": "^5.3",
+        "amphp/http-server": "^3.4",
+        "amphp/postgres": "^2.1"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.47",
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "phpstan/phpstan": "^2.1",
+        "phpyh/coding-standard": "^2.6",
+        "symfony/var-dumper": "^7.2"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Kafkiansky\\Day4\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
+    },
+    "scripts": {
+        "check": [
+            "@composer fixcs -- --dry-run",
+            "@phpstan",
+            "@composer validate"
+        ],
+        "fixcs": "vendor/bin/php-cs-fixer fix --diff --verbose",
+        "pre-command-run": "mkdir -p var",
+        "phpstan": "vendor/bin/phpstan analyze"
+    }
+}
