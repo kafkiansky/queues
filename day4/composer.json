@@ -20,7 +20,8 @@
         "psr/log": "^3.0",
         "ramsey/uuid": "^4.7",
         "symfony/dotenv": "^7.2",
-        "azjezz/psl": "^3.2"
+        "azjezz/psl": "^3.2",
+        "amphp/http-server-router": "^2.0"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.47",
@@ -38,7 +39,9 @@
             "src/createLogger.php",
             "src/createPostgres.php",
             "src/parseEnv.php",
-            "src/createServer.php"
+            "src/createServer.php",
+            "src/createRouter.php",
+            "src/shutdown.php"
         ]
     },
     "config": {
