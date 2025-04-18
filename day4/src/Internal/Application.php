@@ -15,11 +15,14 @@ use Kafkiansky\Day4\Router\RouterBuilder;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use function Kafkiansky\Day4\createLogger;
+use function Kafkiansky\Day4\createMapper;
 use function Kafkiansky\Day4\createPostgresPool;
 use function Kafkiansky\Day4\createServer;
+use function Kafkiansky\Day4\parseEnvBool;
 use function Kafkiansky\Day4\parseEnvList;
 use function Kafkiansky\Day4\parseEnvString;
 use function Kafkiansky\Day4\router;
+use function Kafkiansky\Day4\setupSchema;
 
 /**
  * @internal
@@ -43,13 +46,20 @@ final class Application
             dsn: parseEnvString('POSTGRES_DSN') ?: throw new \InvalidArgumentException('POSTGRES_DSN environment is empty.'),
         );
 
+        setupSchema($pool);
+
         $server = createServer(
             hosts: [...parseEnvList('SERVER_HOST')],
             logger: $logger,
         );
 
+        $mapper = createMapper(
+            parseEnvString('CACHE_DIR'),
+            parseEnvBool('APP_DEBUG'),
+        );
+
         $router = router($logger)
-            ->route('/transactions/add', new CallableRequestHandler(new AddTransactionHandler($pool, $logger)), RouterBuilder::HTTP_METHOD_POST)
+            ->route('/transactions/add', new CallableRequestHandler(new AddTransactionHandler($pool, new RequestMapper($mapper), $logger)), RouterBuilder::HTTP_METHOD_POST)
             ->build($server);
 
         return new self(

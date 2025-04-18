@@ -1,0 +1,6 @@
+POST http://localhost:8083/transactions/add
+Content-Type: application/json
+
+{
+  "transactionId": "1db6abec-ef5e-445b-9bd1-ed3eca2d5a64"
+}

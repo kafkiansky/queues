@@ -26,11 +26,20 @@ function parseEnvList(string $name, ?Type\TypeInterface $type = null): iterable
  * @api
  * @param non-empty-string $name
  * @param ?non-empty-string $default
- * @return ($default is not null ? non-empty-string : ?string)
+ * @return ($default is not null ? non-empty-string : ?non-empty-string)
  */
 function parseEnvString(string $name, ?string $default = null): ?string
 {
     return parseEnv($name, Type\non_empty_string(), $default);
+}
+
+/**
+ * @api
+ * @param non-empty-string $name
+ */
+function parseEnvBool(string $name, bool $default = false): bool
+{
+    return parseEnv($name, Type\bool(), $default);
 }
 
 /**
