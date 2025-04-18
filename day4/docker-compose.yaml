@@ -12,7 +12,6 @@ services:
 
   sequin:
     image: sequin/sequin:latest
-    pull_policy: always
     ports:
       - "7376:7376"
     environment:
@@ -44,6 +43,8 @@ services:
       - db:/var/lib/postgresql/data
       - ./docker/postgres-init:/docker-entrypoint-initdb.d
     command: ["postgres", "-c", "wal_level=logical"]
+    ports:
+      - "54321:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s

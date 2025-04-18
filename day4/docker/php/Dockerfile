@@ -18,7 +18,7 @@ EOF
 
 RUN <<EOF
     set -e
-    install-php-extensions opcache pcntl sockets
+    install-php-extensions opcache pcntl sockets pgsql bcmath intl
     apt-get remove -q -y ${PHPIZE_DEPS} ${BUILD_DEPENDS}
 EOF
 
