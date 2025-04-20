@@ -34,7 +34,7 @@ wait-debezium:
 
 setup-postgres-connector:
 	curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" \
-    http://localhost:8084/connectors/ -d @docker/debezium/config.json
+	http://localhost:8084/connectors/ -d @docker/debezium/config.json
 
 delete-postgres-connector:
 	curl -X DELETE http://localhost:8084/connectors/postgres-connector
