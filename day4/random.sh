@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..30}; do
+for i in {1..15}; do
   accountId=$(uuidgen)
 
   for i in {1..4}; do

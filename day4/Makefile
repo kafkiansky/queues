@@ -40,4 +40,4 @@ delete-postgres-connector:
 	curl -X DELETE http://localhost:8084/connectors/postgres-connector
 
 seed-data:
-	bash http.sh
+	bash random.sh

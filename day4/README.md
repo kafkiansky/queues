@@ -4,6 +4,10 @@
 
 `make down` - Остановить сервисы
 
+### Схема работы приложения
+
+![Схема работы](doc/schema.png)
+
 #### Получить статистику транзакций из кликхауса
 ```shell
 curl -X GET http://localhost:8083/transactions/daily
