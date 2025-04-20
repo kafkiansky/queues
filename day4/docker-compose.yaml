@@ -4,34 +4,12 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - .:/app:cached
-    command: sh -c 'trap "exit 0" TERM; tail -f /dev/null & wait'
+    command: php bin/server.php
     depends_on:
-      - db
-    ports:
-      - "8083:8083"
-
-  sequin:
-    image: sequin/sequin:latest
-    ports:
-      - "7376:7376"
-    environment:
-      - PG_HOSTNAME=db
-      - PG_DATABASE=day4
-      - PG_PORT=5432
-      - PG_USERNAME=postgres
-      - PG_PASSWORD=postgres
-      - PG_POOL_SIZE=20
-      - SECRET_KEY_BASE=wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If
-      - VAULT_KEY=2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY=
-      - REDIS_URL=redis://redis:6379
-      - CONFIG_FILE_PATH=/config/playground.yml
-    volumes:
-      - ./docker/sequin/playground.yml:/config/playground.yml
-    depends_on:
-      redis:
-        condition: service_started
       db:
         condition: service_healthy
+    ports:
+      - "8083:8083"
 
   db:
     image: postgres:16
@@ -39,6 +17,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: day4
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
       - db:/var/lib/postgresql/data
       - ./docker/postgres-init:/docker-entrypoint-initdb.d
@@ -51,13 +30,19 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
-    image: redis:7
+  debezium:
+    image: debezium/connect:2.6
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
-      - "7378:6379"
-    command: ["redis-server", "--port", "6379"]
-    volumes:
-      - redis:/data
+      - "8084:8083"
+    environment:
+      BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092,kafka-4:9092
+      GROUP_ID: debezium
+      CONFIG_STORAGE_TOPIC: debezium_configs
+      OFFSET_STORAGE_TOPIC: debezium_offsets
+      STATUS_STORAGE_TOPIC: debezium_statuses
 
   kafka-1:
     image: bitnami/kafka:latest
@@ -202,4 +187,3 @@ services:
 
 volumes:
   db: {}
-  redis: {}

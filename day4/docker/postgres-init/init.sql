@@ -1,6 +1,15 @@
 \c day4
 
-create publication sequin_pub for all tables;
+CREATE TABLE IF NOT EXISTS transactions (
+    id UUID NOT NULL,
+    account_id UUID NOT NULL,
+    type TEXT NOT NULL,
+    amount BIGINT NOT NULL,
+    PRIMARY KEY (id)
+);
 
-select
-    pg_create_logical_replication_slot('sequin_slot', 'pgoutput');
+ALTER TABLE transactions REPLICA IDENTITY FULL;
+
+CREATE PUBLICATION debezium_pub FOR ALL TABLES;
+
+SELECT pg_create_logical_replication_slot('debezium_slot', 'pgoutput');
