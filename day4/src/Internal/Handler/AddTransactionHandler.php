@@ -74,7 +74,7 @@ final class AddTransactionHandler
         }
 
         return Http\jsonResponse(
-            HttpStatus::CONFLICT,
+            HttpStatus::OK,
             ['status' => 'ok'],
         );
     }
