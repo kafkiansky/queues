@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     account_id UUID NOT NULL,
     type TEXT NOT NULL,
     amount BIGINT NOT NULL,
+    date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     PRIMARY KEY (id)
 );
 

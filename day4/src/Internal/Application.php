@@ -9,11 +9,13 @@ use Amp\Http\Server\ErrorHandler;
 use Amp\Http\Server\HttpServer;
 use Amp\Http\Server\Router;
 use Amp\Postgres\PostgresConnectionPool;
-use Kafkiansky\Day4\Internal\Handler\AddTransactionHandler;
+use Kafkiansky\Day4\Internal\Handler\AddTransaction\AddTransactionHandler;
+use Kafkiansky\Day4\Internal\Handler\MeasureTransaction\GetDailyTransactionsHandler;
 use Kafkiansky\Day4\Router\CallableRequestHandler;
 use Kafkiansky\Day4\Router\RouterBuilder;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use function Kafkiansky\Day4\createClickHouse;
 use function Kafkiansky\Day4\createLogger;
 use function Kafkiansky\Day4\createMapper;
 use function Kafkiansky\Day4\createPostgresPool;
@@ -58,8 +60,34 @@ final class Application
             parseEnvBool('APP_DEBUG'),
         );
 
+        $clickhouse = createClickHouse(
+            mapper: $mapper,
+            host: parseEnvString('CLICKHOUSE_HOST') ?: throw new \InvalidArgumentException('CLICKHOUSE_HOST environment is empty.'),
+            user: parseEnvString('CLICKHOUSE_USER') ?: throw new \InvalidArgumentException('CLICKHOUSE_USER environment is empty.'),
+            password: parseEnvString('CLICKHOUSE_PASSWORD'),
+        );
+
         $router = router($logger)
-            ->route('/transactions/add', new CallableRequestHandler(new AddTransactionHandler($pool, new RequestMapper($mapper), $logger)), RouterBuilder::HTTP_METHOD_POST)
+            ->route(
+                '/transactions/add',
+                new CallableRequestHandler(
+                    new AddTransactionHandler(
+                        $pool,
+                        new RequestMapper($mapper),
+                        $logger,
+                    ),
+                ),
+                RouterBuilder::HTTP_METHOD_POST,
+            )
+            ->route(
+                '/transactions/daily',
+                new CallableRequestHandler(
+                    new GetDailyTransactionsHandler(
+                        $clickhouse,
+                        $logger,
+                    ),
+                ),
+            )
             ->build($server);
 
         return new self(

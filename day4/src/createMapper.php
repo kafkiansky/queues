@@ -20,6 +20,7 @@ function createMapper(?string $cachePath = null, bool $inDev = false): TreeMappe
         ->registerConstructor(
             Uuid::fromString(...),
         )
+        ->supportDateFormats('Y-m-d')
         ->allowSuperfluousKeys()
         ->allowPermissiveTypes();
 

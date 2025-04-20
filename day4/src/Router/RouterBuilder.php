@@ -71,7 +71,7 @@ final class RouterBuilder
             $this->errorHandler,
         );
 
-        $server->routes[] = [$handler, $path, $method];
+        $server->routes = [...$this->routes, [$handler, $path, $method]];
 
         return $server;
     }

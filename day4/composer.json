@@ -14,16 +14,16 @@
         "amphp/byte-stream": "^2.1",
         "amphp/http-client": "^5.3",
         "amphp/http-server": "^3.4",
+        "amphp/http-server-router": "^2.0",
         "amphp/log": "^2.0",
         "amphp/postgres": "^2.1",
+        "azjezz/psl": "^3.2",
+        "cuyz/valinor": "^1.15",
+        "latitude/latitude": "^4.2",
         "monolog/monolog": "^3.9",
         "psr/log": "^3.0",
         "ramsey/uuid": "^4.7",
-        "symfony/dotenv": "^7.2",
-        "azjezz/psl": "^3.2",
-        "amphp/http-server-router": "^2.0",
-        "latitude/latitude": "^4.2",
-        "cuyz/valinor": "^1.15"
+        "symfony/dotenv": "^7.2"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.47",
@@ -46,6 +46,7 @@
             "src/shutdown.php",
             "src/createMapper.php",
             "src/setupSchema.php",
+            "src/createClickHouse.php",
             "src/Sql/queryBuilder.php",
             "src/Sql/parseError.php",
             "src/Http/response.php"

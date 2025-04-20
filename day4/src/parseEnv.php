@@ -30,7 +30,7 @@ function parseEnvList(string $name, ?Type\TypeInterface $type = null): iterable
  */
 function parseEnvString(string $name, ?string $default = null): ?string
 {
-    return parseEnv($name, Type\non_empty_string(), $default);
+    return parseEnv($name, Type\nullable(Type\non_empty_string()), $default);
 }
 
 /**

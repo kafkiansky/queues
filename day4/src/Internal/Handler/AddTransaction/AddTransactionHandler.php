@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kafkiansky\Day4\Internal\Handler;
+namespace Kafkiansky\Day4\Internal\Handler\AddTransaction;
 
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\Request;

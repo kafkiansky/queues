@@ -1,4 +1,4 @@
-up: copy-env docker-up setup-topic setup-debezium
+up: copy-env docker-up setup-topic setup-debezium seed-data
 
 down:
 	docker compose down --remove-orphans
@@ -38,3 +38,6 @@ setup-postgres-connector:
 
 delete-postgres-connector:
 	curl -X DELETE http://localhost:8084/connectors/postgres-connector
+
+seed-data:
+	bash http.sh

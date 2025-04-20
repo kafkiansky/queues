@@ -129,6 +129,7 @@ services:
     container_name: clickhouse-01
     hostname: clickhouse-01
     volumes:
+      - ./docker/clickhouse-init/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./docker/clickhouse-01/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ./docker/clickhouse-01/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
@@ -145,6 +146,7 @@ services:
     container_name: clickhouse-02
     hostname: clickhouse-02
     volumes:
+      - ./docker/clickhouse-init/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./docker/clickhouse-02/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ./docker/clickhouse-02/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
@@ -184,6 +186,16 @@ services:
       - ./docker/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
       - "127.0.0.1:9183:9181"
+
+  ch-ui:
+    image: ghcr.io/caioricciuti/ch-ui:latest
+    restart: always
+    ports:
+      - "5521:5521"
+    environment:
+      VITE_CLICKHOUSE_URL: "http://127.0.0.1:8123"
+      VITE_CLICKHOUSE_USER: "default"
+      VITE_CLICKHOUSE_PASS: ""
 
 volumes:
   db: {}
