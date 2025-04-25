@@ -1,6 +1,6 @@
 {
     "name": "kafkiansky/day4",
-    "description": "Testing CDC using Sequin.",
+    "description": "Testing CDC using Debezium.",
     "license": "MIT",
     "type": "project",
     "authors": [

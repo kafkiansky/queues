@@ -4,7 +4,7 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - .:/app:cached
-    command: php bin/server.php
+    command: sh -c "composer install && php bin/server.php"
     depends_on:
       db:
         condition: service_healthy
