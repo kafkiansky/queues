@@ -7,6 +7,7 @@ edition = "2024"
 anyhow = "1.0.98"
 async-nats = "0.40.0"
 axum = "0.8.3"
+clap = { version = "4.5.37", features = ["derive"] }
 dotenv = "0.15.0"
 futures = "0.3.31"
 serde = "1.0.219"
@@ -16,5 +17,9 @@ tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 
 [[bin]]
-name = "rpc"
-path = "src/bin/rpc.rs"
+name = "server"
+path = "src/bin/server.rs"
+
+[[bin]]
+name = "subscriber"
+path = "src/bin/subscriber.rs"

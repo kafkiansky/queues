@@ -7,8 +7,6 @@ use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-static CHANNEL: &str = "words.reverse";
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenv()?;
@@ -29,10 +27,11 @@ async fn main() -> anyhow::Result<()> {
     )
     .await?;
 
-    let responder = responder::reverse_word(nats.clone(), CHANNEL).await?;
+    let responder = responder::reverse_word(nats.clone(), nats::RPC_CHANNEL).await?;
 
     let app = Router::new()
         .route("/reverse-word", post(reverse_word))
+        .route("/push-word", post(push_word))
         .with_state(nats);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
@@ -51,7 +50,10 @@ async fn reverse_word(
 ) -> (StatusCode, Json<ReversedWord>) {
     tracing::info!(r#"a new word "{}" for reverse received"#, req.word.clone());
 
-    match nats.request(CHANNEL, req.word.clone().into()).await {
+    match nats
+        .request(nats::RPC_CHANNEL, req.word.clone().into())
+        .await
+    {
         Ok(reply) => {
             let reversed = from_utf8(&reply.payload).unwrap_or_default().to_owned();
 
@@ -84,4 +86,29 @@ struct ReverseWord {
 #[derive(Serialize, Default)]
 struct ReversedWord {
     word: String,
+}
+
+#[derive(Deserialize)]
+struct PushWord {
+    word: String,
+}
+
+async fn push_word(nats: State<Client>, Json(req): Json<PushWord>) -> StatusCode {
+    tracing::info!(r#"a new word "{}" for queue received"#, req.word.clone());
+
+    match nats
+        .publish(nats::QUEUE_CHANNEL, req.word.clone().into())
+        .await
+    {
+        Ok(_) => {
+            tracing::info!(r#"a word "{}" successfully queued"#, req.word.clone());
+
+            return StatusCode::OK;
+        }
+        Err(err) => {
+            tracing::error!("request completed with error: {}", err);
+        }
+    }
+
+    StatusCode::INTERNAL_SERVER_ERROR
 }

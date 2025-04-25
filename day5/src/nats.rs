@@ -1,5 +1,8 @@
 use async_nats::{ConnectOptions, ToServerAddrs};
 
+pub static RPC_CHANNEL: &str = "words.reverse";
+pub static QUEUE_CHANNEL: &str = "words.queue";
+
 pub async fn connect<T: ToServerAddrs>(
     url: T,
     user: Option<String>,
