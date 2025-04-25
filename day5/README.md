@@ -28,17 +28,17 @@ make run-server
 
 Запустить консьюмера, который будет подсчитывать количество символов в слове:
 ```shell
-run-count-subscriber:
+make run-count-subscriber
 ```
 
 Запустить консьюмера, который будет подсчитывать количество гласных в слове:
 ```shell
-run-vowels-subscriber:
+make run-vowels-subscriber
 ```
 
 Запустить консьюмера, который будет подсчитывать количество согласных в слове:
 ```shell
-run-consonants-subscriber:
+make run-consonants-subscriber
 ```
 
 Опубликовать слово в очередь:
@@ -58,7 +58,7 @@ make run-server
 
 Запустить консьюмера:
 ```shell
-run-consumer:
+make run-consumer
 ```
 
 Опубликовать слово в очередь:
