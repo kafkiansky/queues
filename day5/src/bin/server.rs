@@ -9,6 +9,12 @@ use axum::{Json, Router, extract::State, http::StatusCode, routing::post};
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 
+#[derive(Clone)]
+struct App {
+    nats: Client,
+    jetstream: Context,
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenv()?;
@@ -37,6 +43,16 @@ async fn main() -> anyhow::Result<()> {
     let _ = responder.await?;
 
     Ok(())
+}
+
+#[derive(Deserialize)]
+struct ReverseWord {
+    word: String,
+}
+
+#[derive(Serialize, Default)]
+struct ReversedWord {
+    word: String,
 }
 
 async fn reverse_word(
@@ -75,22 +91,12 @@ async fn reverse_word(
 }
 
 #[derive(Deserialize)]
-struct ReverseWord {
-    word: String,
-}
-
-#[derive(Serialize, Default)]
-struct ReversedWord {
-    word: String,
-}
-
-#[derive(Deserialize)]
 struct PushWord {
     word: String,
 }
 
 async fn push_word(app: State<App>, Json(req): Json<PushWord>) -> StatusCode {
-    tracing::info!(r#"a new word "{}" for queue received"#, req.word.clone());
+    tracing::info!(r#"a new word "{}" for pubsub received"#, req.word.clone());
 
     match app
         .nats
@@ -143,10 +149,4 @@ async fn queue_word(app: State<App>, Json(req): Json<QueueWord>) -> StatusCode {
     }
 
     StatusCode::INTERNAL_SERVER_ERROR
-}
-
-#[derive(Clone)]
-struct App {
-    nats: Client,
-    jetstream: Context,
 }
