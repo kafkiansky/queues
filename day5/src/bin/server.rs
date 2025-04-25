@@ -1,31 +1,18 @@
-use std::{env, str::from_utf8};
+use std::str::from_utf8;
 
-use app::{nats, responder};
+use app::{nats, responder, tracer};
 use async_nats::Client;
 use axum::{Json, Router, extract::State, http::StatusCode, routing::post};
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenv()?;
 
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                format!("{}=debug,axum::rejection=trace", env!("CARGO_CRATE_NAME")).into()
-            }),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+    tracer::init();
 
-    let nats = nats::connect(
-        env::var("NATS_URL").unwrap_or("nats://localhost:4222".to_string()),
-        env::var("NATS_USER").ok(),
-        env::var("NATS_PASSWORD").ok(),
-    )
-    .await?;
+    let nats = nats::connect_from_env().await?;
 
     let responder = responder::reverse_word(nats.clone(), nats::RPC_CHANNEL).await?;
 

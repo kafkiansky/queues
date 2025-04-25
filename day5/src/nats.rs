@@ -1,4 +1,5 @@
 use async_nats::{ConnectOptions, ToServerAddrs};
+use std::env;
 
 pub static RPC_CHANNEL: &str = "words.reverse";
 pub static QUEUE_CHANNEL: &str = "words.queue";
@@ -15,4 +16,15 @@ pub async fn connect<T: ToServerAddrs>(
     }
 
     Ok(options.connect(url).await?)
+}
+
+pub async fn connect_from_env() -> anyhow::Result<async_nats::Client> {
+    let client = connect(
+        env::var("NATS_URL").unwrap_or("nats://localhost:4222".to_string()),
+        env::var("NATS_USER").ok(),
+        env::var("NATS_PASSWORD").ok(),
+    )
+    .await?;
+
+    Ok(client)
 }
