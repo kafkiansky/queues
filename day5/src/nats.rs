@@ -1,8 +1,15 @@
-use async_nats::{ConnectOptions, ToServerAddrs};
+use async_nats::{
+    ConnectOptions, ToServerAddrs,
+    jetstream::{
+        self, Context,
+        stream::{self, Stream},
+    },
+};
 use std::env;
 
 pub static RPC_CHANNEL: &str = "words.reverse";
-pub static QUEUE_CHANNEL: &str = "words.queue";
+pub static PUBSUB_CHANNEL: &str = "words.pubsub";
+pub static QUEUE_CHANNEL: &str = "words";
 
 pub async fn connect<T: ToServerAddrs>(
     url: T,
@@ -27,4 +34,16 @@ pub async fn connect_from_env() -> anyhow::Result<async_nats::Client> {
     .await?;
 
     Ok(client)
+}
+
+pub async fn create_stream(js: Context) -> anyhow::Result<Stream> {
+    let stream = js
+        .create_stream(jetstream::stream::Config {
+            name: QUEUE_CHANNEL.to_owned(),
+            retention: stream::RetentionPolicy::WorkQueue,
+            ..Default::default()
+        })
+        .await?;
+
+    Ok(stream)
 }

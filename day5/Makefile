@@ -24,3 +24,6 @@ run-vowels-subscriber:
 
 run-consonants-subscriber:
 	docker compose exec rust cargo run --bin=subscriber -- --mode=consonants
+
+run-consumer:
+	docker compose exec rust cargo run --bin=consumer

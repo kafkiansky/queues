@@ -48,3 +48,23 @@ curl --header "Content-Type: application/json" \
   --data '{"word":"nats"}' \
   http://localhost:8080/push-word
 ```
+
+#### nats jetstream queue
+
+Запустить http сервер:
+```shell
+make run-server
+```
+
+Запустить консьюмера:
+```shell
+run-consumer:
+```
+
+Опубликовать слово в очередь:
+```shell
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"word":"nats"}' \
+  http://localhost:8080/queue-word
+```

@@ -67,7 +67,7 @@ async fn main() -> anyhow::Result<()> {
 
     let nats = nats::connect_from_env().await?;
 
-    let mut subscription = nats.subscribe(nats::QUEUE_CHANNEL).await?;
+    let mut subscription = nats.subscribe(nats::PUBSUB_CHANNEL).await?;
 
     while let Some(message) = subscription.next().await {
         if let Ok(word) = from_utf8(&message.payload) {

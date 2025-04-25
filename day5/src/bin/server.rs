@@ -1,7 +1,10 @@
 use std::str::from_utf8;
 
 use app::{nats, responder, tracer};
-use async_nats::Client;
+use async_nats::{
+    Client,
+    jetstream::{self, Context},
+};
 use axum::{Json, Router, extract::State, http::StatusCode, routing::post};
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
@@ -16,10 +19,15 @@ async fn main() -> anyhow::Result<()> {
 
     let responder = responder::reverse_word(nats.clone(), nats::RPC_CHANNEL).await?;
 
+    let jetstream = jetstream::new(nats.clone());
+
+    nats::create_stream(jetstream.clone()).await?;
+
     let app = Router::new()
         .route("/reverse-word", post(reverse_word))
         .route("/push-word", post(push_word))
-        .with_state(nats);
+        .route("/queue-word", post(queue_word))
+        .with_state(App { nats, jetstream });
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
     tracing::debug!("listening on {}", listener.local_addr().unwrap());
@@ -32,12 +40,13 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn reverse_word(
-    nats: State<Client>,
+    app: State<App>,
     Json(req): Json<ReverseWord>,
 ) -> (StatusCode, Json<ReversedWord>) {
     tracing::info!(r#"a new word "{}" for reverse received"#, req.word.clone());
 
-    match nats
+    match app
+        .nats
         .request(nats::RPC_CHANNEL, req.word.clone().into())
         .await
     {
@@ -80,15 +89,16 @@ struct PushWord {
     word: String,
 }
 
-async fn push_word(nats: State<Client>, Json(req): Json<PushWord>) -> StatusCode {
+async fn push_word(app: State<App>, Json(req): Json<PushWord>) -> StatusCode {
     tracing::info!(r#"a new word "{}" for queue received"#, req.word.clone());
 
-    match nats
-        .publish(nats::QUEUE_CHANNEL, req.word.clone().into())
+    match app
+        .nats
+        .publish(nats::PUBSUB_CHANNEL, req.word.clone().into())
         .await
     {
         Ok(_) => {
-            tracing::info!(r#"a word "{}" successfully queued"#, req.word.clone());
+            tracing::info!(r#"a word "{}" successfully pushed"#, req.word.clone());
 
             return StatusCode::OK;
         }
@@ -98,4 +108,45 @@ async fn push_word(nats: State<Client>, Json(req): Json<PushWord>) -> StatusCode
     }
 
     StatusCode::INTERNAL_SERVER_ERROR
+}
+
+#[derive(Deserialize)]
+struct QueueWord {
+    word: String,
+}
+
+async fn queue_word(app: State<App>, Json(req): Json<QueueWord>) -> StatusCode {
+    tracing::info!(r#"a new word "{}" for queue received"#, req.word.clone());
+
+    match app
+        .jetstream
+        .publish(nats::QUEUE_CHANNEL, req.word.clone().into())
+        .await
+    {
+        Ok(ack) => match ack.await {
+            Ok(result) => {
+                tracing::info!(
+                    r#"a word "{}" successfully queued with seq "{}""#,
+                    req.word.clone(),
+                    result.sequence
+                );
+
+                return StatusCode::OK;
+            }
+            Err(err) => {
+                tracing::error!("ack error: {}", err);
+            }
+        },
+        Err(err) => {
+            tracing::error!("request completed with error: {}", err);
+        }
+    }
+
+    StatusCode::INTERNAL_SERVER_ERROR
+}
+
+#[derive(Clone)]
+struct App {
+    nats: Client,
+    jetstream: Context,
 }

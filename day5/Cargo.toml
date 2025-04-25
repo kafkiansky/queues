@@ -23,3 +23,7 @@ path = "src/bin/server.rs"
 [[bin]]
 name = "subscriber"
 path = "src/bin/subscriber.rs"
+
+[[bin]]
+name = "consumer"
+path = "src/bin/consumer.rs"
